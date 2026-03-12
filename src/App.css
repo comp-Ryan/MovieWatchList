@@ -1,0 +1,8 @@
+.search_container {
+    border: 1px solid black;
+    height: 45vh;
+    overflow: scroll;
+    overflow-x: hidden;
+    margin: 2.5vh;
+}
+

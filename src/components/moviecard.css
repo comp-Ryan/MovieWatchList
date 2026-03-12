@@ -1,0 +1,51 @@
+.poster {
+    width: 40px;
+    margin: 2.5px;
+    border-radius: 5px;
+}
+
+.movieCard {
+    margin: 5px;
+    border: 1px solid black;
+    border-radius: 5px;
+    display: grid;
+    grid-template-columns: auto 1fr 1fr 1fr;
+    box-shadow: 2px 2px 0px 1px rgb(0, 0, 0, 50%)
+}
+
+.titleBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.buttonContainer {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 20px;
+    padding: 15px;
+}
+
+.heartPhoto {
+    width: 2.5vw;
+}
+
+.viewButton {
+    border: none;
+    border-radius: 5px;
+}
+
+.viewButton:hover {
+    cursor: pointer;
+    background-color: rgb(190, 190, 190);
+}
+
+.likeButton {
+    border: none;
+    background: none;
+}
+
+.likeButton:hover {
+    cursor: pointer;
+}
