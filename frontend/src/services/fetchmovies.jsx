@@ -11,7 +11,9 @@ const getAll = () => {
 
 const getMovie = (query) => {
   console.log('fetching results for', query, '...')
-  const request =  `https://www.omdbapi.com/?apikey=${apiKey}&t=${query}` 
+  const request =  axios.get(`https://www.omdbapi.com/?apikey=${apiKey}&t=${query}`) 
+  return request.then(response => response.data)
+
 }
 
 const getSearchResults = (query) => {
@@ -22,5 +24,6 @@ const getSearchResults = (query) => {
 
 export default { 
   getAll: getAll, 
-  getSearchResults: getSearchResults
+  getSearchResults: getSearchResults,
+  getMovie:getMovie
 }

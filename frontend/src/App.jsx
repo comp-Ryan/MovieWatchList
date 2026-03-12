@@ -6,75 +6,11 @@ import MovieCard from './components/moviecard'
 
 function App() {
   const [query, setQuery] = useState('')
+  const [personalListQuery, setPersonalListQuery] = useState('')
   const [showModal, setShowModal] = useState(false)
+  const [searchResultsStatus, setSearchResultsStatus] = useState(false)
   const [searchResults, setSearchResults] = useState([])
   const [movieResults, setMovieResults] = useState({})
-  const test = [
-    {
-      "Title": "Captain America: The Winter Soldier",
-      "Year": "2014",
-      "imdbID": "tt1843866",
-      "Type": "movie",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BNWY1NjFmNDItZDhmOC00NjI1LWE0ZDItMTM0MjBjZThiOTQ2XkEyXkFqcGc@._V1_SX300.jpg"
-    },
-    {
-      "Title": "Captain America: The First Avenger",
-      "Year": "2011",
-      "imdbID": "tt0458339",
-      "Type": "movie",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BNzUyM2YyY2MtNzNlMS00MWU5LTgxNjAtNzZlNmI2NjU2NDZlXkEyXkFqcGc@._V1_SX300.jpg"
-    },
-    {
-      "Title": "Captain America: Civil War",
-      "Year": "2016",
-      "imdbID": "tt3498820",
-      "Type": "movie",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BMjQ0MTgyNjAxMV5BMl5BanBnXkFtZTgwNjUzMDkyODE@._V1_SX300.jpg"
-    },
-    {
-      "Title": "Captain Marvel",
-      "Year": "2019",
-      "imdbID": "tt4154664",
-      "Type": "movie",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BZDI1NGU2ODAtNzBiNy00MWY5LWIyMGEtZjUxZjUwZmZiNjBlXkEyXkFqcGc@._V1_SX300.jpg"
-    },
-    {
-      "Title": "Captain Phillips",
-      "Year": "2013",
-      "imdbID": "tt1535109",
-      "Type": "movie",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BMWYyNjI3ZjEtNGE5ZS00MDgxLWIzNGEtZTgzNDVlZjZjYWU5XkEyXkFqcGc@._V1_SX300.jpg"
-    },
-    {
-      "Title": "Captain Fantastic",
-      "Year": "2016",
-      "imdbID": "tt3553976",
-      "Type": "movie",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BMjE5OTM0OTY5NF5BMl5BanBnXkFtZTgwMDcxOTQ3ODE@._V1_SX300.jpg"
-    },
-    {
-      "Title": "Captain America: Brave New World",
-      "Year": "2025",
-      "imdbID": "tt14513804",
-      "Type": "movie",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BNDRjY2E0ZmEtN2QwNi00NTEwLWI3MWItODNkMGYwYWFjNGE0XkEyXkFqcGc@._V1_SX300.jpg"
-    },
-    {
-      "Title": "Sky Captain and the World of Tomorrow",
-      "Year": "2004",
-      "imdbID": "tt0346156",
-      "Type": "movie",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BMTM0NDQzMDA1NF5BMl5BanBnXkFtZTcwNTU3ODAzMw@@._V1_SX300.jpg"
-    },
-    {
-      "Title": "Captain Corelli's Mandolin",
-      "Year": "2001",
-      "imdbID": "tt0238112",
-      "Type": "movie",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BMTA3Nzg5YzYtMDIzNy00ZmNlLWIxN2UtNTFhM2M5MmMyYmJkXkEyXkFqcGc@._V1_SX300.jpg"
-    }
-  ]
-
   const test2 = {
   "Title": "Captain America: The Winter Soldier",
   "Year": "2014",
@@ -120,6 +56,13 @@ function App() {
     event.preventDefault()
     console.log('submitted', query)
     setQuery('')
+    movieservices
+      .getMovie(query)
+      .then(data => {
+        console.log("data set", data)
+        setMovieResults(data)
+      })
+    setShowModal(true)
   }
 
   const onSearchBarChange = (e) => {
@@ -129,14 +72,18 @@ function App() {
       .then(data => {
         console.log(data.Response)
         if (data.Response == 'True'){
+          setSearchResultsStatus(true)
           setSearchResults(data.Search)
+        }
+        else {
+          setSearchResultsStatus(false)
         }
       })
   }
 
   return (
     <>
-      {showModal ? <MovieModal movieData={test2}/> : ""}
+      {showModal ? <MovieModal movieData={movieResults} setShowModal={setShowModal}/> : ""}
       <div className="search_container">
         <form onSubmit={handleSubmit}>
           <input 
@@ -147,9 +94,9 @@ function App() {
           />
           <button type="submit">Search</button>
         </form>
-        {test.map(movie => 
-          <MovieCard key={movie.imdbID} movieData={movie}/>
-        )}
+        {searchResultsStatus ? searchResults.map(movie => 
+          <MovieCard key={movie.imdbID} movieData={movie} setMovieResults={setMovieResults} setShowModal={setShowModal}/>
+        ) : "Too many results"}
       </div>
       <div className="search_container"> 
         <div>
@@ -158,8 +105,8 @@ function App() {
         </div>
         <input 
             type="text"
-            value={query}
-            onChange={onSearchBarChange}
+            value={personalListQuery}
+            onChange={(e)=>setPersonalListQuery(e.target.value)}
             placeholder="Search for movies..."
           />
       </div>
