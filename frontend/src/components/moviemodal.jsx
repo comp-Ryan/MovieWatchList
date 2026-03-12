@@ -15,7 +15,6 @@ const MovieModal = ({movieData, setShowModal}) => {
         console.log('reset')
     }
 
-    console.log(movieData)
     return (
     <div className="modal_container">
         <button className='exit' onClick={()=>setShowModal(false)}>X</button>
@@ -28,8 +27,12 @@ const MovieModal = ({movieData, setShowModal}) => {
                         {starState[star-1] ? <img className="star" src="https://img.icons8.com/?size=100&id=7856&format=png&color=FFC826"/> : <img className="star" src="https://img.icons8.com/?size=100&id=104&format=png&color=000000"/> }
                     </button> 
                 ))}
-
             </div>
+            <div>
+                <button>Submit</button>
+                <button>Reset</button>
+            </div>
+            
           </div>
           <div className="modal_information">
             <div className="title">{movieData.Title}</div>

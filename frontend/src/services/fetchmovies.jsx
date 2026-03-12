@@ -22,8 +22,21 @@ const getSearchResults = (query) => {
   return request.then(response => response.data)
 }
 
+const addMovie = newObject => {
+  console.log('posting new object', newObject)
+  const request = axios.post(baseUrl, newObject)
+  return request.then(response => response.data)
+}
+
+const deleteMovie = id => {
+  const request = axios.delete(`${baseUrl}/${id}`)
+  return request.then(response => response.data)
+}
+
 export default { 
   getAll: getAll, 
   getSearchResults: getSearchResults,
-  getMovie:getMovie
+  getMovie:getMovie,
+  addMovie: addMovie,
+  deleteMovie: deleteMovie
 }

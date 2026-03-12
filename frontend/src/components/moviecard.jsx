@@ -2,7 +2,7 @@ import { useState } from 'react'
 import movieservices from '../services/fetchmovies'
 import './moviecard.css'
 
-const MovieCard = ({movieData, setShowModal, setMovieResults}) => {
+const MovieCard = ({movieData, setShowModal, setMovieResults, setMovieList}) => {
     const [heartState, setHeartState] = useState(false)
     const [watchListStatus, setWatchListStatus] = useState(false)
 
@@ -21,6 +21,27 @@ const MovieCard = ({movieData, setShowModal, setMovieResults}) => {
         setShowModal(true)
     }
 
+    const addToWatchList = () => {
+
+        if (!watchListStatus){
+            const movie = {
+                Title: movieData.Title,
+                id: movieData.imdbID,
+                Year: movieData.Year,
+                Type: movieData.Type,
+                rating: 'none',
+                watchlist: 'true',
+                Poster: movieData.Poster
+            }
+        
+            movieservices
+                .addMovie(movie)
+                .then(returnedMovieList => setMovieList(returnedMovieList))
+        }
+        setWatchListStatus(!watchListStatus)
+
+    }
+
     return (
         <div className="movieCard">
             <img src={movieData.Poster} className='poster'/>
@@ -32,7 +53,7 @@ const MovieCard = ({movieData, setShowModal, setMovieResults}) => {
             <div></div>
             <div className="buttonContainer">
                 <button className="viewButton" onClick={handleView}>view</button>
-                <button className="likeButton" onClick={()=>setWatchListStatus(!watchListStatus)} onMouseEnter={()=>setHeartState(true)} onMouseLeave={handleMouseExit}>
+                <button className="likeButton" onClick={addToWatchList} onMouseEnter={()=>setHeartState(true)} onMouseLeave={handleMouseExit}>
                     {heartState ? <img className="heartPhoto" src="https://img.icons8.com/?size=100&id=7697&format=png&color=EA2222"/> : <img className="heartPhoto" src="https://img.icons8.com/?size=100&id=87&format=png&color=000000"/>}
                 </button>
             </div>
