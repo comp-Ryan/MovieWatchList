@@ -14,7 +14,8 @@
     "dev": "node --watch index.js",
     "start": "node index.js",
     "build:ui": "shx rm -rf dist && cd ../frontend && npm run build && shx cp -r dist ../backend",
-    "deploy:full": "npm run build:ui && git add . && git commit && git push && npm start",
+    "deploy:full": "npm run build:ui && git add . && git commit && git push",
+    "deploy:render": "npm run build:ui && npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
