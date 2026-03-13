@@ -16,7 +16,7 @@ const MovieCard = ({movieData, setShowModal, setMovieResults, setMovieList, movi
             setHeartState(false);
             setWatchListStatus(false);
         }
-    }, [movieList])
+    }, [movieList, movieData.Title])
 
     const handleMouseExit = () => {
         if (!watchListStatus){

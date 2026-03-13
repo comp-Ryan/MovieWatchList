@@ -16,8 +16,14 @@ const MovieModal = ({movieData, setShowModal, movieList, setMovieList}) => {
             setClickedState(true)
             setStarState(starState.map((star, index) => index < existingMovie.rating ? true : star))
             setClickedStarState(starState.map((star, index) => index < existingMovie.rating ? true : star))
+        } else {
+            setStarLock(false)
+            setClickedState(false)
+            setStarState([false,false,false,false,false])
+            setClickedStarState([false,false,false,false,false])
+
         }
-    }, [movieList])
+    }, [movieList, movieData.Title])
 
     const highlightStars = (id) => {
         if (!starLock){
