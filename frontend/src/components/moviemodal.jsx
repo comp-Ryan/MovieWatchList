@@ -10,7 +10,7 @@ const MovieModal = ({movieData, setShowModal, movieList, setMovieList}) => {
 
     useEffect(()=>{
         const existingMovie = movieList.find(movie => movie.Title == movieData.Title)
-        if (existingMovie && existingMovie.rating) {
+        if (existingMovie && existingMovie.rating !== 'none') {
             console.log(existingMovie.rating)
             setStarLock(true)
             setClickedState(true)
