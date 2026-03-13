@@ -76,12 +76,6 @@ function App() {
             console.log(watchList)
           }}>RatingsList</button>
         </div>
-        <input 
-            type="text"
-            value={personalListQuery}
-            onChange={(e)=>setPersonalListQuery(e.target.value)}
-            placeholder="Search for movies..."
-          />
         {watchList ? movieList.filter(movie => movie.watchlist === 'true').map(movie => (<MovieCard key={movie.id} movieData={movie} setMovieResults={setMovieResults} setShowModal={setShowModal} movieList={movieList} setMovieList={setMovieList}/>)) : movieList.filter(movie => movie.rating !== 'none').map(movie => (<MovieCard key={movie.id} movieData={movie} setMovieResults={setMovieResults} setShowModal={setShowModal} movieList={movieList} setMovieList={setMovieList}/>))}
       </div>
     </>

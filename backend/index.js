@@ -4,7 +4,7 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
-app.use(express.static('dist'))
+// app.use(express.static('dist'))
 
 let movieList = []
 
@@ -15,7 +15,7 @@ app.get('/api/movies', (request, response) => {
 app.get('/api/movies/:id', (request, response) => {
     const id = request.params.id
     const movie = movieList.find(movie => movie.id == id)
-    if (contact) {
+    if (movie) {
         response.json(movie)
     } else {
         response.status(404).end()
