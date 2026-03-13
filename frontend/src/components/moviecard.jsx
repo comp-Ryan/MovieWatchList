@@ -7,20 +7,15 @@ const MovieCard = ({movieData, setShowModal, setMovieResults, setMovieList, movi
     const [watchListStatus, setWatchListStatus] = useState(false)
 
     useEffect(()=>{
-        const exisitingMovie = movieList.find(movie => movie.Title == movieData.Title)
-        if (exisitingMovie){
-            const existingWatchList = Object.hasOwn(exisitingMovie,'watchlist');
-            if (existingWatchList) {
-                if (movieList.find(movie => movie.Title == movieData.Title).watchlist == "true") {
-                    setHeartState(true)
-                    setWatchListStatus(true)
-                    return
-                }
-                
-            }
+        const existingMovie = movieList.find(movie => movie.Title == movieData.Title)
+        if (existingMovie && existingMovie.watchlist === "true") {
+            setHeartState(true);
+            setWatchListStatus(true);
         }
-        setHeartState(false)
-        setWatchListStatus(false)
+        else {
+            setHeartState(false);
+            setWatchListStatus(false);
+        }
     }, [movieList])
 
     const handleMouseExit = () => {
@@ -39,31 +34,46 @@ const MovieCard = ({movieData, setShowModal, setMovieResults, setMovieList, movi
     }
 
     const addToWatchList = () => {
-
+        const id = movieData.imdbID ? movieData.imdbID : movieData.id
+        const backendMovieData = movieList.find(movie => movie.id == id)
         if (!watchListStatus){
-            const movie = {
+            console.log('1')
+
+            const newMovie = {
                 Title: movieData.Title,
-                id: movieData.imdbID ? movieData.imdbID : movieData.id,
+                id: id,
                 Year: movieData.Year,
                 Type: movieData.Type,
                 rating: movieData.rating ? movieData.rating : 'none',
                 watchlist: 'true',
                 Poster: movieData.Poster
             }
-        
-            movieservices
-                .addMovie(movie)
-                .then(returnedMovieList => setMovieList(returnedMovieList))
+
+            if (backendMovieData){
+                movieservices.updateMovie(id, newMovie)
+                setMovieList(movieList.map(movie => movie.id == id ? newMovie : movie)) 
+            } else {
+                movieservices
+                    .addMovie(newMovie)
+                    .then(returnedMovieList => setMovieList(returnedMovieList))
+            }
         }
 
         if (watchListStatus){
-            const id = movieData.imdbID ? movieData.imdbID : movieData.id
-            movieservices
-                .deleteMovie(id)
-            setMovieList(movieList.filter(movie => movie.id !== id))            
+            const newMovie = {
+                Title: movieData.Title,
+                id: id,
+                Year: movieData.Year,
+                Type: movieData.Type,
+                rating: movieData.rating ? movieData.rating : 'none',
+                watchlist: 'false',
+                Poster: movieData.Poster
+            }
+
+            movieservices.updateMovie(id, newMovie)
+            setMovieList(movieList.map(movie => movie.id == id ? newMovie : movie))            
         }
         setWatchListStatus(!watchListStatus)
-
     }
 
     return (

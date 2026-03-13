@@ -53,7 +53,7 @@ function App() {
 
   return (
     <>
-      {showModal ? <MovieModal movieData={movieResults} setShowModal={setShowModal}/> : ""}
+      {showModal ? <MovieModal movieData={movieResults} setShowModal={setShowModal} setMovieList={setMovieList} movieList={movieList}/> : ""}
       <div className="search_container">
         <form onSubmit={handleSubmit}>
           <input 

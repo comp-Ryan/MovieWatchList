@@ -5,17 +5,7 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-let movieList = [
-    { 
-      "Title": "Ex Machina",
-      "id": "tt0470752",
-      "Year": "2014",
-      "Type": "movie",
-      "rating": "3", 
-      "watchlist": "true",
-      "Poster": "https://m.media-amazon.com/images/M/MV5BMTUxNzc0OTIxMV5BMl5BanBnXkFtZTgwNDI3NzU2NDE@._V1_SX300.jpg"
-    }
-]
+let movieList = []
 
 app.get('/api/movies', (request, response) => {
     response.json(movieList)
@@ -36,6 +26,28 @@ app.delete('/api/movies/:id', (request, response) => {
     movieList = movieList.filter(movie => movie.id !== id)
     response.status(204).end()
 })
+
+app.put('/api/movies/:id', (request, response) => {
+    const body = request.body
+    console.log('body', body)
+
+    if ((!body.Title) || (!body.id) || (!body.rating) || (!body.watchlist) || (!body.Type) || (!body.Year) || (!body.Poster)) {
+        console.log("A field is invalid/missing")
+        return response.status(400).json({
+            error: "A field is invalid/missing"
+        })
+    }
+
+    if (movieList.some(movie => movie.id === body.id)) {
+        movieList = movieList.map(movie => movie.id === body.id ? body : movie)
+        response.json(movieList)
+    } else {
+        return response.status(400).json({
+            error: "ID must exist in watchlist"
+        })
+    }
+})
+
 
 app.post('/api/movies', (request, response) => {
     const body = request.body

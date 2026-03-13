@@ -33,10 +33,16 @@ const deleteMovie = id => {
   return request.then(response => response.data)
 }
 
+const updateMovie = (id, newObject) => {
+  const request = axios.put(`${baseUrl}/${id}`, newObject)
+  return request.then(response => response.data)
+}
+
 export default { 
   getAll: getAll, 
   getSearchResults: getSearchResults,
   getMovie:getMovie,
   addMovie: addMovie,
-  deleteMovie: deleteMovie
+  deleteMovie: deleteMovie,
+  updateMovie: updateMovie
 }

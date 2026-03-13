@@ -1,18 +1,121 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import movieservices from '../services/fetchmovies'
 import './modal.css'
 // Need to add set out modal and set in modal
-const MovieModal = ({movieData, setShowModal}) => {
+const MovieModal = ({movieData, setShowModal, movieList, setMovieList}) => {
     const [starState, setStarState] = useState([false,false,false,false,false])
+    const [clickedStarState, setClickedStarState] = useState([false,false,false,false,false])
+    const [clickedState, setClickedState] = useState(false)
+    const [starLock, setStarLock] = useState(false)
+
+    useEffect(()=>{
+        const existingMovie = movieList.find(movie => movie.Title == movieData.Title)
+        if (existingMovie && existingMovie.rating) {
+            console.log(existingMovie.rating)
+            setStarLock(true)
+            setClickedState(true)
+            setStarState(starState.map((star, index) => index < existingMovie.rating ? true : star))
+            setClickedStarState(starState.map((star, index) => index < existingMovie.rating ? true : star))
+        }
+    }, [movieList])
 
     const highlightStars = (id) => {
-        console.log(id)
-        console.log(starState.map((val, index) => (index < id)))
-        setStarState(starState.map((val, index) => (index < id)))
+        if (!starLock){
+            setStarState(starState.map((val, index) => (index < id)))
+        }
     }
 
     const reset = () => {
+        if (!clickedState){
+            setStarState([false,false,false,false,false])
+            console.log('reset')
+        } else {
+            setStarState(clickedStarState)
+        }
+    }
+
+    const handleClick = (id) => {
+        setClickedStarState(starState.map((val, index) => (index < id)))
+        setClickedState(true)
+    }
+
+    const handleSubmit = () => {
+        let stars = 0;
+        if (clickedState){
+            stars = clickedStarState.filter(star => star !== false).length
+        } 
+
+        const backendMovieData = movieList.find(movie => movie.id == movieData.imdbID)
+        console.log(backendMovieData)
+
+        if (backendMovieData) {
+            const movie = {
+                Title: backendMovieData.Title,
+                id: backendMovieData.id,
+                Year: backendMovieData.Year,
+                Type: backendMovieData.Type,
+                rating: stars,
+                watchlist: backendMovieData.watchlist,
+                Poster: backendMovieData.Poster
+            }
+
+            movieservices
+                .updateMovie(movieData.imdbID, movie)
+                .then(data => {
+                    console.log(data)
+                    setMovieList(data)
+                })
+        } else {
+            const movie = {
+                Title: movieData.Title,
+                id: movieData.imdbID,
+                Year: movieData.Year,
+                Type: movieData.Type,
+                rating: stars,
+                watchlist: 'false',
+                Poster: movieData.Poster
+            }
+
+            movieservices
+                .addMovie(movie)
+                .then(data => {
+                    setMovieList(data)
+                })
+        }
+        setStarLock(true)
+    }
+
+    const handleDelete = () => {
+        movieservices
+            .deleteMovie(movieData.imdbID)
+        setMovieList(movieList.filter(movie => movie.id !== movieData.imdbID))
+        setShowModal(false)
+    } 
+
+    const handleReset =() => {
+        setClickedState(false)
         setStarState([false,false,false,false,false])
-        console.log('reset')
+        setClickedStarState([false,false,false,false,false])
+        const backendMovieData = movieList.find(movie => movie.id == movieData.imdbID)
+
+        if (backendMovieData) {
+            const movie = {
+                Title: backendMovieData.Title,
+                id: backendMovieData.id,
+                Year: backendMovieData.Year,
+                Type: backendMovieData.Type,
+                rating: 'none',
+                watchlist: backendMovieData.watchlist,
+                Poster: backendMovieData.Poster
+            }
+
+            movieservices
+                .updateMovie(movieData.imdbID, movie)
+                .then(data => {
+                    console.log(data)
+                    setMovieList(data)
+                })
+        } 
     }
 
     return (
@@ -23,14 +126,18 @@ const MovieModal = ({movieData, setShowModal}) => {
             <img src={movieData.Poster} className="modal_poster"/>
             <div className="stars">
                 {[1,2,3,4,5].map(star => (
-                    <button className="star_container" key={star} onMouseEnter={() => highlightStars(star)} onMouseLeave={reset}> 
+                    <button className="star_container" key={star} onMouseEnter={() => highlightStars(star)} onMouseLeave={reset} onClick={()=>handleClick(star)}> 
                         {starState[star-1] ? <img className="star" src="https://img.icons8.com/?size=100&id=7856&format=png&color=FFC826"/> : <img className="star" src="https://img.icons8.com/?size=100&id=104&format=png&color=000000"/> }
                     </button> 
                 ))}
             </div>
             <div>
-                <button>Submit</button>
-                <button>Reset</button>
+                {starLock ? <button onClick={()=> {
+                    setStarLock(false)
+                }}>Edit</button> : <button onClick={handleSubmit}>Submit</button>  }
+                {starLock ? '' : <button onClick={handleReset}>Reset</button> }
+
+                <button onClick={handleDelete}>Delete</button>
             </div>
             
           </div>
