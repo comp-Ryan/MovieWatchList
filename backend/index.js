@@ -34,8 +34,7 @@ app.get('/api/movies/:id', (request, response) => {
 app.delete('/api/movies/:id', (request, response) => {
     const id = request.params.id
     movieList = movieList.filter(movie => movie.id !== id)
-
-    rresponse.status(204).end()
+    response.status(204).end()
 })
 
 app.post('/api/movies', (request, response) => {
@@ -43,12 +42,14 @@ app.post('/api/movies', (request, response) => {
     console.log(body)
 
     if ((!body.Title) || (!body.id) || (!body.rating) || (!body.watchlist) || (!body.Type) || (!body.Year) || (!body.Poster)) {
+        console.log("A field is invalid/missing")
         return response.status(400).json({
-            error: `A field is invalid/missing`
+            error: "A field is invalid/missing"
         })
     }
 
     if (movieList.some(movie => movie.id === body.id)) {
+        console.log("name must be unique")
         return response.status(400).json({
             error: "name must be unique"
         })
@@ -65,6 +66,7 @@ app.post('/api/movies', (request, response) => {
     }
 
     movieList = movieList.concat(movie)
+    console.log("MovieList", movieList)
     response.json(movieList)
 })
 

@@ -1,10 +1,27 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import movieservices from '../services/fetchmovies'
 import './moviecard.css'
 
-const MovieCard = ({movieData, setShowModal, setMovieResults, setMovieList}) => {
+const MovieCard = ({movieData, setShowModal, setMovieResults, setMovieList, movieList}) => {
     const [heartState, setHeartState] = useState(false)
     const [watchListStatus, setWatchListStatus] = useState(false)
+
+    useEffect(()=>{
+        const exisitingMovie = movieList.find(movie => movie.Title == movieData.Title)
+        if (exisitingMovie){
+            const existingWatchList = Object.hasOwn(exisitingMovie,'watchlist');
+            if (existingWatchList) {
+                if (movieList.find(movie => movie.Title == movieData.Title).watchlist == "true") {
+                    setHeartState(true)
+                    setWatchListStatus(true)
+                    return
+                }
+                
+            }
+        }
+        setHeartState(false)
+        setWatchListStatus(false)
+    }, [movieList])
 
     const handleMouseExit = () => {
         if (!watchListStatus){
@@ -26,10 +43,10 @@ const MovieCard = ({movieData, setShowModal, setMovieResults, setMovieList}) => 
         if (!watchListStatus){
             const movie = {
                 Title: movieData.Title,
-                id: movieData.imdbID,
+                id: movieData.imdbID ? movieData.imdbID : movieData.id,
                 Year: movieData.Year,
                 Type: movieData.Type,
-                rating: 'none',
+                rating: movieData.rating ? movieData.rating : 'none',
                 watchlist: 'true',
                 Poster: movieData.Poster
             }
@@ -37,6 +54,13 @@ const MovieCard = ({movieData, setShowModal, setMovieResults, setMovieList}) => 
             movieservices
                 .addMovie(movie)
                 .then(returnedMovieList => setMovieList(returnedMovieList))
+        }
+
+        if (watchListStatus){
+            const id = movieData.imdbID ? movieData.imdbID : movieData.id
+            movieservices
+                .deleteMovie(id)
+            setMovieList(movieList.filter(movie => movie.id !== id))            
         }
         setWatchListStatus(!watchListStatus)
 

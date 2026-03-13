@@ -12,6 +12,7 @@ function App() {
   const [searchResults, setSearchResults] = useState([])
   const [movieResults, setMovieResults] = useState({})
   const [movieList, setMovieList] = useState([])
+  const [watchList, setWatchListStatus] = useState(true)
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -64,13 +65,16 @@ function App() {
           <button type="submit">Search</button>
         </form>
         {searchResultsStatus ? searchResults.map(movie => 
-          <MovieCard key={movie.imdbID} movieData={movie} setMovieResults={setMovieResults} setShowModal={setShowModal}/>
+          <MovieCard key={movie.imdbID} movieList={movieList} setMovieList={setMovieList} movieData={movie} setMovieResults={setMovieResults} setShowModal={setShowModal}/>
         ) : "Too many results"}
       </div>
       <div className="search_container"> 
         <div>
-          <button>Watchlist</button>
-          <button>RatingsList</button>
+          <button onClick={()=>setWatchListStatus(true)}>Watchlist</button>
+          <button onClick={()=>{
+            setWatchListStatus(false)
+            console.log(watchList)
+          }}>RatingsList</button>
         </div>
         <input 
             type="text"
@@ -78,9 +82,7 @@ function App() {
             onChange={(e)=>setPersonalListQuery(e.target.value)}
             placeholder="Search for movies..."
           />
-        {movieList.map(movie => 
-          <MovieCard key={movie.id} movieData={movie} setMovieResults={setMovieResults} setShowModal={setShowModal} movieList={movieList} setMovieList={setMovieList}/>
-        )}
+        {watchList ? movieList.filter(movie => movie.watchlist === 'true').map(movie => (<MovieCard key={movie.id} movieData={movie} setMovieResults={setMovieResults} setShowModal={setShowModal} movieList={movieList} setMovieList={setMovieList}/>)) : movieList.filter(movie => movie.rating !== 'none').map(movie => (<MovieCard key={movie.id} movieData={movie} setMovieResults={setMovieResults} setShowModal={setShowModal} movieList={movieList} setMovieList={setMovieList}/>))}
       </div>
     </>
   )
