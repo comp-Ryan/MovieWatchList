@@ -14,6 +14,15 @@
   <img alt="Axios" src="https://img.shields.io/badge/Axios-1-5A29E4?style=flat-square&logo=axios&logoColor=white">
 </p>
 
+<p align="center"><b>Contributors</b></p>
+<div align="center">
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/comp-Ryan"><img src="https://github.com/comp-Ryan.png?size=120" width="72" height="72" alt="Ryan"></a><br/><sub><b>Ryan</b></sub><br/><sub><a href="https://github.com/comp-Ryan">@comp-Ryan</a></sub></td>
+  </tr>
+</table>
+</div>
+
 A small full-stack practice app: search movies on OMDb, add them to a list, rate them, and mark the ones you still want to watch. The Express backend serves the built React frontend from `backend/dist`.
 
 ## Features
