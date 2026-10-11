@@ -23,6 +23,11 @@
 </table>
 </div>
 
+<p align="center">
+  <img src="screenshots/search.jpg" alt="Searching OMDb and opening a movie's details" width="900"><br/>
+  <sub>Searching OMDb and opening a movie's details</sub>
+</p>
+
 A small full-stack practice app: search movies on OMDb, add them to a list, rate them, and mark the ones you still want to watch. The Express backend serves the built React frontend from `backend/dist`.
 
 ## Features
